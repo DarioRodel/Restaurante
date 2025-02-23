@@ -1,6 +1,6 @@
 from django.db.models import Count, F
 
-from gestion.models import Chef, Recipe, Restaurant, RecipeStats
+from gestion.models import Chef, Recipe, Restaurant, RecipeStats, RestaurantConfig
 
 """
 1. Creación de chef con su especialidad,
@@ -55,3 +55,23 @@ calcular el porcentaje de opiniones positivas para cada receta.
 recipes_more_reviews = RecipeStats.objects.filter(positive_reviews__gt=F('total_orders'))
 RecipeStats.objects.update(total_orders=F('total_orders') + 10)
 RecipeStats.objects.update(positive_review_percentage=100 * F('positive_reviews') / F('total_orders'))
+"""
+6. Insertamos la configuración para "Hell's Kitchen" con el JSON,
+filtramos las configuraciones donde el servicio "delivery" esté disponible,
+filtramos los platos con alcohol  restringidos,
+las configuraciones por la mañana con horario 10am y 
+encontrar la configuracion que tengan mas de 2 servicios
+"""
+hells_kitchen_config = RestaurantConfig(
+    restaurant=hells_kitchen,
+    settings={
+        "opening_hours": {"weekdays": "12pm-11pm", "weekends": "10am-11pm"},
+        "services": ["delivery", "takeaway", "dine-in"],
+        "restricted_dishes": {"alcohol": True, "pork": False}
+    }
+)
+hells_kitchen_config.save()
+configs_delivery = RestaurantConfig.objects.filter(settings__services__contains="delivery")
+configs_alcohol = RestaurantConfig.objects.filter(settings__restricted_dishes__alcohol=True)
+configs_10am = RestaurantConfig.objects.filter(settings__opening_hours__weekends__startswith="10am")
+configs_2_services = RestaurantConfig.objects.filter(settings__services__len__gt=2)
