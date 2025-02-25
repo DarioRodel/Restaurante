@@ -53,8 +53,9 @@ calcular el porcentaje de opiniones positivas para cada receta.
 """
 recipes_more_reviews = RecipeStats.objects.filter(positive_reviews__gt=F('total_orders'))
 RecipeStats.objects.update(total_orders=F('total_orders') + 10)
-#Este mirar
-RecipeStats.objects.update(positive_review_percentage=100 * F('positive_reviews') / F('total_orders'))
+recipes = RecipeStats.objects.annotate(
+    positive_reviews_percentage=F('positive_reviews') / F('total_orders') * 100
+)
 """
 6. Insertamos la configuración para "Hell's Kitchen" con el JSON,
 filtramos las configuraciones donde el servicio "delivery" esté disponible,
@@ -62,7 +63,6 @@ filtramos los platos con alcohol  restringidos,
 las configuraciones por la mañana con horario 10am y 
 encontrar la configuracion que tengan mas de 2 servicios
 """
-#Este mirar
 hells_kitchen_config = RestaurantConfig(
     restaurant=hells_kitchen,
     settings={
@@ -118,7 +118,6 @@ RecipeStats.objects.update(positive_reviews=F('positive_reviews') * 1.05)
 """
 3.Calcular y anotar el porcentaje de opiniones positivas para cada receta.
 """
-#Este mirar
 RecipeStats.objects.update(positive_review_percentage=100 * F('positive_reviews') / F('total_orders'))
 
 """
@@ -137,7 +136,6 @@ RecipeStats.objects.filter(total_orders__gt=100).update(total_orders=F('total_or
 RecipeStats.objects.filter(total_orders=0).update(total_orders=0, positive_reviews=0)
 
 # Filtros avanzados en el campo JSONField.
-#Este mirar
 """
 1.Encontrar configuraciones de restaurantes que ofrecen servicio de "delivery".
 """
@@ -158,7 +156,6 @@ configs_alcohol_restricted = RestaurantConfig.objects.filter(settings__restricte
 """
 configs_more_2_services = RestaurantConfig.objects.filter(settings__services__len__gt=2)
 
-#Este mirar
 """
 5.Filtrar restaurantes que tengan horarios de apertura entre semana que incluyan "8am-10pm".
 """
