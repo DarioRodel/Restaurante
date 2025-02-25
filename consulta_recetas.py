@@ -1,6 +1,10 @@
 from django.db.models import Count, F
 from gestion.models import Chef, Recipe, Restaurant, RecipeStats, RestaurantConfig
-
+"""
+Trabajo de django ORM - Consulta sobre recetas y restaurantes
+Estudiante: Dario Romero Delgado
+Fecha: 25/2/25
+"""
 """
 1. Creación de chef con su especialidad,
 creamos receta con su tiempo de preparación creada por chef Gordon,
